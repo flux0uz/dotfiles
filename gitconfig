@@ -11,7 +11,7 @@
 
 [core]
   pager = less -FRSX
-	editor = '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl' -n -w
+	editor = code --wait
 
 [alias]
   co = checkout
@@ -24,7 +24,7 @@
   stat = !git --no-pager diff --stat
 
   # Clean merged branches
-  sweep = !git branch --merged master | grep -v 'master$' | xargs git branch -d && git remote prune origin
+  sweep = !git branch --merged develop | grep -v 'develop$' | xargs git branch -d && git remote prune origin
 
   # http://www.jukie.net/bart/blog/pimping-out-git-log
   lg = log --graph --all --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)%an%Creset %C(yellow)%d%Creset'
@@ -47,5 +47,12 @@
 [branch "master"]
   mergeoptions = --no-edit
 [user]
-	email = aamontoo@gmail.com
+	email = 61015466+flux0uz@users.noreply.github.com
 	name = Arthur Amon
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main

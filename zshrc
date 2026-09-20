@@ -1,7 +1,14 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 ZSH=$HOME/.oh-my-zsh
 
 # You can change the theme with another one from https://github.com/robbyrussell/oh-my-zsh/wiki/themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Useful oh-my-zsh plugins for Le Wagon bootcamps
 plugins=(git gitfast last-working-dir common-aliases sublime zsh-syntax-highlighting history-substring-search)
@@ -23,7 +30,31 @@ type -a pyenv > /dev/null && eval "$(pyenv init -)" && eval "$(pyenv virtualenv-
 
 # Load nvm if installed (To manage your Node versions)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Call `nvm use` automatically in a directory with a `.nvmrc` file
+autoload -U add-zsh-hook
+load-nvmrc() {
+  if nvm -v &> /dev/null; then
+    local node_version="$(nvm version)"
+    local nvmrc_path="$(nvm_find_nvmrc)"
+
+    if [ -n "$nvmrc_path" ]; then
+      local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+      if [ "$nvmrc_node_version" = "N/A" ]; then
+        nvm install
+      elif [ "$nvmrc_node_version" != "$node_version" ]; then
+        nvm use --silent
+      fi
+    elif [ "$node_version" != "$(nvm version default)" ]; then
+      nvm use default --silent
+    fi
+  fi
+}
+type -a nvm > /dev/null && add-zsh-hook chpwd load-nvmrc
+type -a nvm > /dev/null && load-nvmrc
 
 # Rails and Ruby uses the local `bin` folder to store binstubs.
 # So instead of running `bin/rails` like the doc says, just run `rails`
@@ -40,5 +71,23 @@ pyenv activate lewagon 2>/dev/null && echo "🐍 Loading 'lewagon' virtualenv"
 # Encoding stuff for the terminal
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
-export BUNDLER_EDITOR="'/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl' -a"
-export BUNDLER_EDITOR="'/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl' -a"
+export BUNDLER_EDITOR=code
+export EDITOR=code
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# pnpm
+export PNPM_HOME="/Users/arthur/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+source ~/completion-for-pnpm.zsh
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/arthur/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+export PATH="$HOME/.local/bin:$PATH"

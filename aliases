@@ -1,6 +1,38 @@
-# Get External IP / Internet Speed
+# Get External IP
 alias myip="curl https://ipinfo.io/json" # or /ip for plain-text ip
-alias speedtest="curl -s https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py | python -"
 
 # Quickly serve the current directory as HTTP
 alias serve='ruby -run -e httpd . -p 8000' # Or python -m SimpleHTTPServer :)
+
+# Open Rails credentials
+alias cred="EDITOR="code --wait" bin/rails credentials:edit"
+
+# Git Push Origin Master
+alias gpho="git push origin"
+
+# Git Pull Origin Master
+alias gplo="git pull origin"
+
+# Nav to code folder
+alias dev="cd ~/code/"
+
+# Nav to personal folder
+alias personal="cd ~/code/flux0uz"
+
+# Nav to bolero folder
+alias bolero="cd ~/code/Bolero-Music"
+
+# Nav to Bolero API Repo
+alias api="cd ~/code/Bolero-Music/Bolero-full-app/Bolero-music-api"
+
+# Nav to Bolero Client Repo (v4)
+alias client="cd ~/code/Bolero-Music/bolero-client-v4"
+
+# Kill Rails Server
+alias killserver='kill -9 $(lsof -i tcp:5000 -t)'
+
+# Open dev credentials
+alias dev-creds="EDITOR='code --wait' bin/rails credentials:edit"
+
+# Open prod credentials
+alias prod-creds="EDITOR='code --wait' bin/rails credentials:edit --environment production"
